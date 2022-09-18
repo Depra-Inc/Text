@@ -1,4 +1,7 @@
-﻿namespace Depra.Text.Encoding.Api
+﻿// Copyright © 2022 Nikolay Melnikov. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+namespace Depra.Text.Encoding.Api
 {
     public abstract class Encoder : IEncoder
     {

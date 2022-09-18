@@ -1,4 +1,7 @@
-﻿using Depra.Text.Encoding.Api;
+﻿// Copyright © 2022 Nikolay Melnikov. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+using Depra.Text.Encoding.Api;
 
 namespace Depra.Text.Encoding.Impl
 {

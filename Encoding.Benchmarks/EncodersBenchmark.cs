@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// Copyright © 2022 Nikolay Melnikov. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 using Depra.Text.Encoding.Api;
 using Depra.Text.Encoding.Impl;
