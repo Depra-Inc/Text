@@ -3,13 +3,12 @@
 
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
-using Depra.Text.Encoding.Api;
+using Depra.Text.Encoding.Abstract;
 using Depra.Text.Encoding.Impl;
-using Depra.Text.Encoding.Spans.Impl;
+using Depra.Text.Encoding.Spans;
 
 namespace Depra.Text.Encoding.Benchmarks
 {
-    [MemoryDiagnoser]
     public class EncodersBenchmark
     {
         // Base64 encoded class name (for compatibility with Base64BasedByteConverter)

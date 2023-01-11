@@ -3,17 +3,18 @@
 
 using System;
 using System.Collections.Generic;
-using Depra.Text.Encoding.Api;
+using System.Diagnostics.CodeAnalysis;
+using Depra.Text.Encoding.Abstract;
 using Depra.Text.Encoding.Enums;
 using Depra.Text.Encoding.Impl;
-using Depra.Text.Encoding.Spans.Impl;
+using Depra.Text.Encoding.Spans;
 using FluentAssertions;
 using NUnit.Framework;
 
 namespace Depra.Text.Encoding.UnitTests
 {
     [TestFixture]
-    public class EncodersTests
+    internal sealed class EncodersTests
     {
         private const int INPUT_LENGHT = 8;
 
@@ -22,8 +23,7 @@ namespace Depra.Text.Encoding.UnitTests
         [OneTimeSetUp]
         public void Setup()
         {
-            var randomStringService = new RandomStringGenerator();
-            _randomInputString = randomStringService.GetRandomString(INPUT_LENGHT, true);
+            _randomInputString = RandomStringGenerator.Generate(INPUT_LENGHT, true);
         }
 
         [Test]
@@ -58,6 +58,7 @@ namespace Depra.Text.Encoding.UnitTests
         }
 
         [Test]
+        [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
         public void WhenEncodingStringToBytes_AndStringIsNull_ThenThrowArgumentNullException(
             [ValueSource(nameof(GetEncoders))] IEncoder encoder)
         {
@@ -65,10 +66,10 @@ namespace Depra.Text.Encoding.UnitTests
             string input = null;
 
             // Act.
-            void Act() => encoder.ToBytes(input);
+            Action act = () => encoder.ToBytes(input);
 
             // Assert.
-            Assert.Throws<ArgumentNullException>(Act);
+            act.Should().Throw<ArgumentNullException>();
         }
 
         [Test]
@@ -108,6 +109,7 @@ namespace Depra.Text.Encoding.UnitTests
         }
 
         [Test]
+        [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
         public void WhenEncodingBytesToString_AndInputIsNull_ThenThrowArgumentNullException(
             [ValueSource(nameof(GetEncoders))] IEncoder encoder)
         {
@@ -115,12 +117,13 @@ namespace Depra.Text.Encoding.UnitTests
             byte[] bytes = null;
 
             // Act.
-            void Act() => encoder.ToString(bytes);
+            Action act = () => encoder.ToString(bytes);
 
             // Assert.
-            Assert.Throws<ArgumentNullException>(Act);
+            act.Should().Throw<ArgumentNullException>();
         }
 
+        [SuppressMessage("ReSharper", "RedundantArgumentDefaultValue")]
         public static IEnumerable<IEncoder> GetEncoders()
         {
             yield return new DelimitedEncoder();

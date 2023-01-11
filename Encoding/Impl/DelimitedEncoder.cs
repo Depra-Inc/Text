@@ -2,18 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System;
-using Depra.Text.Encoding.Api;
+using Depra.Text.Encoding.Abstract;
 
 namespace Depra.Text.Encoding.Impl
 {
-    public readonly struct DelimitedEncoder : IEncoder
+    public sealed class DelimitedEncoder : Encoder
     {
-        public byte[] ToBytes(string value)
+        public override byte[] ToBytes(string value)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
+            EnsureString(value);
             
             var array = new byte[value.Length];
             for (var i = 0; i < array.Length; i++)
@@ -25,7 +22,7 @@ namespace Depra.Text.Encoding.Impl
             return array;
         }
 
-        public string ToString(byte[] bytes) => BitConverter.ToString(bytes);
+        public override string ToString(byte[] bytes) => BitConverter.ToString(bytes);
 
         public override string ToString() => nameof(DelimitedEncoder);
     }
