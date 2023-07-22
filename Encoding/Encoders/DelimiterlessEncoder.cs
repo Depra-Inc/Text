@@ -1,9 +1,8 @@
-﻿// Copyright © 2022 Nikolay Melnikov. All rights reserved.
+﻿// Copyright © 2022-2023 Nikolay Melnikov. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 using System;
 using System.Text;
-using Depra.Text.Encoding.Enums;
 using Depra.Text.Encoding.Errors;
 
 namespace Depra.Text.Encoding.Encoders
@@ -57,6 +56,14 @@ namespace Depra.Text.Encoding.Encoders
             _stringBuilder.Clear();
 
             return result;
+        }
+        
+        public enum EBase
+        {
+            Binary = 2,
+            Octal = 8,
+            Deca = 10,
+            Hexa = 16
         }
     }
 }

@@ -1,11 +1,10 @@
-﻿// Copyright © 2022 Nikolay Melnikov. All rights reserved.
+﻿// Copyright © 2022-2023 Nikolay Melnikov. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Depra.Text.Encoding.Encoders;
-using Depra.Text.Encoding.Enums;
 using Depra.Text.Encoding.Spans;
 using FluentAssertions;
 using NUnit.Framework;
@@ -124,7 +123,7 @@ internal sealed class EncodersTests
     public static IEnumerable<IEncoder> GetEncoders()
     {
         yield return new DelimitedEncoder();
-        yield return new DelimiterlessEncoder(EBase.Hexa);
+        yield return new DelimiterlessEncoder(DelimiterlessEncoder.EBase.Hexa);
 
         // Not sure if they should be used.
         yield return new Base64BasedEncoder();
