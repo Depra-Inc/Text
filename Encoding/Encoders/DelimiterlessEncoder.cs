@@ -4,11 +4,11 @@
 using System;
 using System.Text;
 using Depra.Text.Encoding.Enums;
-using Encoder = Depra.Text.Encoding.Abstract.Encoder;
+using Depra.Text.Encoding.Errors;
 
-namespace Depra.Text.Encoding.Impl
+namespace Depra.Text.Encoding.Encoders
 {
-    public sealed class DelimiterlessEncoder : Encoder
+    public sealed class DelimiterlessEncoder : IEncoder
     {
         private readonly int _toBase;
         private readonly int _padLength;
@@ -25,9 +25,9 @@ namespace Depra.Text.Encoding.Impl
                 3; // 3 for other
         }
 
-        public override byte[] ToBytes(string value)
+        public byte[] ToBytes(string value)
         {
-            EnsureString(value);
+            Guard.AgainstNull(value);
 
             var charArray = value.ToCharArray();
             var bytes = new byte[charArray.Length];
@@ -40,9 +40,9 @@ namespace Depra.Text.Encoding.Impl
             return bytes;
         }
 
-        public override string ToString(byte[] bytes)
+        public string ToString(byte[] bytes)
         {
-            EnsureBytes(bytes);
+            Guard.AgainstNull(bytes);
             
             // Loop through each byte of the hashed data
             // and format each one as a hexadecimal string.

@@ -2,22 +2,23 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System.Runtime.InteropServices;
-using Depra.Text.Encoding.Abstract;
+using Depra.Text.Encoding.Encoders;
+using Depra.Text.Encoding.Errors;
 
 namespace Depra.Text.Encoding.Spans
 {
-    public sealed class MarshalBasedEncoder : Encoder
+    public sealed class MarshalBasedEncoder : IEncoder
     {
-        public override byte[] ToBytes(string value)
+        public byte[] ToBytes(string value)
         {
-            EnsureString(value);
+            Guard.AgainstNull(value);
             
             return MemoryMarshal.Cast<char, byte>(value).ToArray();
         }
 
-        public override string ToString(byte[] bytes)
+        public string ToString(byte[] bytes)
         {
-            EnsureBytes(bytes);
+            Guard.AgainstNull(bytes);
 
             return MemoryMarshal.Cast<byte, char>(bytes).ToString();
         }

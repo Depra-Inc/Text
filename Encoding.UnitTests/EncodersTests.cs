@@ -4,141 +4,137 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Depra.Text.Encoding.Abstract;
+using Depra.Text.Encoding.Encoders;
 using Depra.Text.Encoding.Enums;
-using Depra.Text.Encoding.Impl;
 using Depra.Text.Encoding.Spans;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Depra.Text.Encoding.UnitTests
+namespace Depra.Text.Encoding.UnitTests;
+
+[TestFixture]
+internal sealed class EncodersTests
 {
-    [TestFixture]
-    internal sealed class EncodersTests
+    private const int INPUT_LENGHT = 8;
+
+    private string _randomInputString;
+
+    [OneTimeSetUp]
+    public void Setup() => 
+        _randomInputString = RandomStringGenerator.Generate(INPUT_LENGHT, true);
+
+    [Test]
+    public void WhenEncodingStringToBytes_AndStringIsRandom_ThenByteArrayIsNotNullOrEmpty(
+        [ValueSource(nameof(GetEncoders))] IEncoder encoder)
     {
-        private const int INPUT_LENGHT = 8;
+        // Arrange.
+        var input = _randomInputString;
 
-        private string _randomInputString;
+        // Act.
+        var bytes = encoder.ToBytes(input);
 
-        [OneTimeSetUp]
-        public void Setup()
-        {
-            _randomInputString = RandomStringGenerator.Generate(INPUT_LENGHT, true);
-        }
+        // Assert.
+        bytes.Should().NotBeNullOrEmpty();
 
-        [Test]
-        public void WhenEncodingStringToBytes_AndStringIsRandom_ThenByteArrayIsNotNullOrEmpty(
-            [ValueSource(nameof(GetEncoders))] IEncoder encoder)
-        {
-            // Arrange.
-            var input = _randomInputString;
+        TestContext.WriteLine($"Input text: {input}\n" +
+                          $"Result bytes: {BitConverter.ToString(bytes)}");
+    }
 
-            // Act.
-            var bytes = encoder.ToBytes(input);
+    [Test]
+    public void WhenEncodingStringToBytes_AndStringIsEmpty_ThenByteArrayIsEmpty(
+        [ValueSource(nameof(GetEncoders))] IEncoder encoder)
+    {
+        // Arrange.
+        var input = string.Empty;
 
-            // Assert.
-            bytes.Should().NotBeNullOrEmpty();
+        // Act.
+        var bytes = encoder.ToBytes(input);
 
-            Console.WriteLine($"Input text: {input}\n" +
-                              $"Result bytes: {BitConverter.ToString(bytes)}");
-        }
+        // Assert.
+        bytes.Should().BeEmpty();
+    }
 
-        [Test]
-        public void WhenEncodingStringToBytes_AndStringIsEmpty_ThenByteArrayIsEmpty(
-            [ValueSource(nameof(GetEncoders))] IEncoder encoder)
-        {
-            // Arrange.
-            var input = string.Empty;
+    [Test]
+    [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
+    public void WhenEncodingStringToBytes_AndStringIsNull_ThenThrowArgumentNullException(
+        [ValueSource(nameof(GetEncoders))] IEncoder encoder)
+    {
+        // Arrange.
+        string input = null;
 
-            // Act.
-            var bytes = encoder.ToBytes(input);
+        // Act.
+        Action act = () => encoder.ToBytes(input);
 
-            // Assert.
-            bytes.Should().BeEmpty();
-        }
+        // Assert.
+        act.Should().Throw<ArgumentNullException>();
+    }
 
-        [Test]
-        [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
-        public void WhenEncodingStringToBytes_AndStringIsNull_ThenThrowArgumentNullException(
-            [ValueSource(nameof(GetEncoders))] IEncoder encoder)
-        {
-            // Arrange.
-            string input = null;
+    [Test]
+    public void WhenEncodingBytesToString_AndArrayIsRandom_ThenStringIsNotNullOrEmpty(
+        [ValueSource(nameof(GetEncoders))] IEncoder encoder)
+    {
+        // Arrange.
+        var random = new Random();
+        var bytes = new byte[INPUT_LENGHT];
+        random.NextBytes(bytes);
 
-            // Act.
-            Action act = () => encoder.ToBytes(input);
+        // Act.
+        var text = encoder.ToString(bytes);
 
-            // Assert.
-            act.Should().Throw<ArgumentNullException>();
-        }
+        // Assert.
+        text.Should().NotBeNullOrEmpty();
 
-        [Test]
-        public void WhenEncodingBytesToString_AndArrayIsRandom_ThenStringIsNotNullOrEmpty(
-            [ValueSource(nameof(GetEncoders))] IEncoder encoder)
-        {
-            // Arrange.
-            var random = new Random();
-            var bytes = new byte[INPUT_LENGHT];
-            random.NextBytes(bytes);
-
-            // Act.
-            var text = encoder.ToString(bytes);
-
-            // Assert.
-            text.Should().NotBeNullOrEmpty();
-
-            Console.WriteLine($"Input bytes: {BitConverter.ToString(bytes)}\n" +
+        TestContext.WriteLine($"Input bytes: {BitConverter.ToString(bytes)}\n" +
                               $"Result text: {text}");
-        }
+    }
 
-        [Test]
-        public void WhenEncodingBytesToString_AndArrayIsEmpty_ThenStringIsEmpty(
-            [ValueSource(nameof(GetEncoders))] IEncoder encoder)
-        {
-            // Arrange.
-            var bytes = Array.Empty<byte>();
+    [Test]
+    public void WhenEncodingBytesToString_AndArrayIsEmpty_ThenStringIsEmpty(
+        [ValueSource(nameof(GetEncoders))] IEncoder encoder)
+    {
+        // Arrange.
+        var bytes = Array.Empty<byte>();
 
-            // Act.
-            var text = encoder.ToString(bytes);
+        // Act.
+        var text = encoder.ToString(bytes);
 
-            // Assert.
-            text.Should().BeEmpty();
+        // Assert.
+        text.Should().BeEmpty();
 
-            Console.WriteLine($"Input bytes: {BitConverter.ToString(bytes)}\n" +
+        TestContext.WriteLine($"Input bytes: {BitConverter.ToString(bytes)}\n" +
                               $"Result text: {text}");
-        }
+    }
 
-        [Test]
-        [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
-        public void WhenEncodingBytesToString_AndInputIsNull_ThenThrowArgumentNullException(
-            [ValueSource(nameof(GetEncoders))] IEncoder encoder)
-        {
-            // Arrange.
-            byte[] bytes = null;
+    [Test]
+    [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
+    public void WhenEncodingBytesToString_AndInputIsNull_ThenThrowArgumentNullException(
+        [ValueSource(nameof(GetEncoders))] IEncoder encoder)
+    {
+        // Arrange.
+        byte[] bytes = null;
 
-            // Act.
-            Action act = () => encoder.ToString(bytes);
+        // Act.
+        Action act = () => encoder.ToString(bytes);
 
-            // Assert.
-            act.Should().Throw<ArgumentNullException>();
-        }
+        // Assert.
+        act.Should().Throw<ArgumentNullException>();
+    }
 
-        [SuppressMessage("ReSharper", "RedundantArgumentDefaultValue")]
-        public static IEnumerable<IEncoder> GetEncoders()
-        {
-            yield return new DelimitedEncoder();
-            yield return new DelimiterlessEncoder(EBase.Hexa);
+    [SuppressMessage("ReSharper", "RedundantArgumentDefaultValue")]
+    public static IEnumerable<IEncoder> GetEncoders()
+    {
+        yield return new DelimitedEncoder();
+        yield return new DelimiterlessEncoder(EBase.Hexa);
 
-            // Not sure if they should be used.
-            yield return new Base64BasedEncoder();
-            yield return new CharacterEncoder(System.Text.Encoding.UTF8);
-            yield return new StreamBasedEncoder(System.Text.Encoding.UTF8);
+        // Not sure if they should be used.
+        yield return new Base64BasedEncoder();
+        yield return new CharacterEncoder(System.Text.Encoding.UTF8);
+        yield return new StreamBasedEncoder(System.Text.Encoding.UTF8);
 
-            // For C# 7.0 and later.
-            yield return new SpanBasedEncoder();
-            yield return new MarshalBasedEncoder();
+        // For C# 7.0 and later.
+        yield return new SpanBasedEncoder();
+        yield return new MarshalBasedEncoder();
 
-            // Add more converters here if needed.
-        }
+        // Add more converters here if needed.
     }
 }

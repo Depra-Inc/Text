@@ -3,8 +3,7 @@
 
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
-using Depra.Text.Encoding.Abstract;
-using Depra.Text.Encoding.Impl;
+using Depra.Text.Encoding.Encoders;
 using Depra.Text.Encoding.Spans;
 
 namespace Depra.Text.Encoding.Benchmarks

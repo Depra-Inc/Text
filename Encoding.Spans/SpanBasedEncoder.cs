@@ -2,17 +2,18 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System;
-using Depra.Text.Encoding.Abstract;
+using Depra.Text.Encoding.Encoders;
+using Depra.Text.Encoding.Errors;
 
 namespace Depra.Text.Encoding.Spans
 {
-    public sealed class SpanBasedEncoder : Encoder
+    public sealed class SpanBasedEncoder : IEncoder
     {
         private const int CHAR_SIZE = sizeof(char);
 
-        public override unsafe byte[] ToBytes(string text)
+        public unsafe byte[] ToBytes(string text)
         {
-            EnsureString(text);
+            Guard.AgainstNull(text);
             
             fixed (char* p = text)
             {
@@ -20,9 +21,9 @@ namespace Depra.Text.Encoding.Spans
             }
         }
 
-        public override unsafe string ToString(byte[] bytes)
+        public unsafe string ToString(byte[] bytes)
         {
-            EnsureBytes(bytes);
+            Guard.AgainstNull(bytes);
             
             fixed (byte* pointer = bytes)
             {

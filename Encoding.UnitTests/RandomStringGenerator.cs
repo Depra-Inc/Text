@@ -5,35 +5,34 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Depra.Text.Encoding.UnitTests
+namespace Depra.Text.Encoding.UnitTests;
+
+public static class RandomStringGenerator
 {
-    public static class RandomStringGenerator
+    public static string Generate(int count, bool includeLowerCase) =>
+        new(GetRandomCharacters(count, includeLowerCase).ToArray());
+
+    private static IEnumerable<char> GetRandomCharacters(int count, bool includeLowerCase)
     {
-        public static string Generate(int count, bool includeLowerCase) =>
-            new(GetRandomCharacters(count, includeLowerCase).ToArray());
+        var characters = GetAvailableRandomCharacters(includeLowerCase);
+        var random = new Random();
+        var result = Enumerable.Range(0, count)
+            .Select(_ => characters[random.Next(characters.Count)]);
 
-        private static IEnumerable<char> GetRandomCharacters(int count, bool includeLowerCase)
+        return result;
+    }
+
+    private static List<char> GetAvailableRandomCharacters(bool includeLowerCase)
+    {
+        var integers = Enumerable.Empty<int>();
+        integers = integers.Concat(Enumerable.Range('A', 26));
+        integers = integers.Concat(Enumerable.Range('0', 10));
+
+        if (includeLowerCase)
         {
-            var characters = GetAvailableRandomCharacters(includeLowerCase);
-            var random = new Random();
-            var result = Enumerable.Range(0, count)
-                .Select(_ => characters[random.Next(characters.Count)]);
-
-            return result;
+            integers = integers.Concat(Enumerable.Range('a', 26));
         }
 
-        private static List<char> GetAvailableRandomCharacters(bool includeLowerCase)
-        {
-            var integers = Enumerable.Empty<int>();
-            integers = integers.Concat(Enumerable.Range('A', 26));
-            integers = integers.Concat(Enumerable.Range('0', 10));
-
-            if (includeLowerCase)
-            {
-                integers = integers.Concat(Enumerable.Range('a', 26));
-            }
-
-            return integers.Select(i => (char)i).ToList();
-        }
+        return integers.Select(i => (char)i).ToList();
     }
 }
